@@ -1,6 +1,5 @@
-# -------- Build stage --------
-# Use Maven with JDK to build the Spring Boot fat JAR
-FROM maven:3.9-eclipse-temurin-17 AS build
+# Use a JDK 21 image for the build stage
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copy Maven files first for caching
@@ -16,7 +15,8 @@ COPY src ./src
 RUN ./mvnw -B -DskipTests package
 
 # -------- Runtime stage --------
-FROM eclipse-temurin:17-jre-jammy
+# Use a JDK 21 JRE for the runtime stage
+FROM eclipse-temurin:21-jre-jammy
 
 # Create non-root user
 RUN useradd -m springuser && mkdir /app
