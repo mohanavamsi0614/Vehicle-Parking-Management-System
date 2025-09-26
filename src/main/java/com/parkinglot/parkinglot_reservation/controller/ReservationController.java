@@ -33,13 +33,13 @@ public class ReservationController {
             return ResponseEntity.badRequest().body("Start time must be before end time");
         }
 
-        // 3. Check max 24 hours
+        // 3. Checking that the time should be max 24 hours
         Duration duration = Duration.between(reservation.getStartTime(), reservation.getEndTime());
         if (duration.toHours() > 24) {
             return ResponseEntity.badRequest().body("Reservation cannot exceed 24 hours");
         }
 
-        // 4. Check overlapping reservations
+        // 4. Used for Checking overlapping reservations
         List<Reservation> conflicts = reservationRepository
                 .findBySlotIdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                         slot.getId(), reservation.getEndTime(), reservation.getStartTime());
@@ -53,7 +53,7 @@ public class ReservationController {
         double rate = (reservation.getVehicleType() == VehicleType.FOUR_WHEELER) ? 30 : 20;
         reservation.setCost(hours * rate);
 
-        // 6. Save
+        // 6. Saving the slot
         reservation.setSlot(slot);
         Reservation saved = reservationRepository.save(reservation);
 
